@@ -15,9 +15,14 @@ Key things to note in this project:
 - Users can view book details and add a review
 
 To run this locally, navigate to the folder and in your terminal run the commands: 
+
 pip3 install -r requirements.txt
+
 export FLASK_APP=application.py
+
 export DATABASE_URL=___ (has been excluded in this README for privacy reasons)
+
 flask run
+
 
 Some images of the project can be viewed in the 'application photos' folder.
