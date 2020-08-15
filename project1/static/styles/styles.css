@@ -1,0 +1,64 @@
+.col {
+    text-align: center;
+    padding: 20px;
+}
+
+#search_div {
+    background: orange;
+    text-align: center;
+    color: white;
+}
+
+#search_div > h1 {
+    color: #0070ff;
+}
+
+#search_div > h4, h5, ul {
+    text-align: left;
+}
+
+button {
+    color: white;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.header {
+    padding: 60px;
+    background: teal;
+    text-align: center;
+    color: white;
+    font-size: 30px;
+}
+
+h1 {
+    text-transform: uppercase;
+}
+
+h3, h5 {
+    text-align: center;
+}
+
+#book {
+    border: 10px solid orange;
+    padding: 20px;
+}
+
+table th {
+    color: teal;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+
+.form-control {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}

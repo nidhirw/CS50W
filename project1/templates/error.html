@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Error
+{% endblock %}
+
+{% block header %}
+<h1>Error</h1>
+{% endblock %}
+
+{% block body %}
+<div class="col">
+    {{ message }}
+
+    {% if login %}
+        <a href="/login">Try again</a>
+    {% elif register %}
+        <a href="/register">Try again</a>
+    {% endif %}
+</div>
+
+{% endblock %}

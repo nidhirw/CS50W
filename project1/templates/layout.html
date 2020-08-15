@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/styles.css') }}" type="text/css">
+        {% if nav_bar %}
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="collapse navbar-collapse d-flex flex-lg-row-reverse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                {% if loggedin %}
+                    <form id="logout" class="form-inline" method="post" action="{{ url_for('logout') }}">
+                        <div class="form-group">
+                            <p>Welcome, {{username}} &nbsp;&nbsp;&nbsp;</p>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary">Log Out</button>
+                        </div>
+                    </form>
+                {% else %}
+                <form id="login" class="form-inline" method="post">
+                    <div class="form-group">
+                        <input class="form-control" name="username" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="password" name="password" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary">Log In</button>
+                    </div>
+                </form>
+                {% endif %}
+              </div>
+            </div>
+        </nav>
+        {% endif %}
+    
+    
+    </head>
+    <body>
+        <div class="header">
+            {% block header %}
+            {% endblock %}
+        </div>
+
+        <div class="container">
+                {% block body %}
+                {% endblock %}
+        </div>
+    </body>
+</html>

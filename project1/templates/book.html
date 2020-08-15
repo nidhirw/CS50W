@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Book
+{% endblock %}
+
+{% block header %}
+<h1>Book Details</h1>
+{% endblock %}
+
+{% block body %}
+<div class="col">
+    <div id="book">
+        <h3 style=color:blue>Book Title: {{ book.title }}</h3>
+        <h3>Author: {{ book.author }}</h3>
+        <h3>Publication Year: {{ book.year }}</h3>
+        <h3>ISBN: {{ book.isbn }}</h3>
+    </div>
+    <div>
+        {% if no_ratings != None %}
+            <br><br><h4>Number of ratings: {{ no_ratings }}</h4>
+        {% endif %}
+
+        {% if avg_rating != None %}
+            <h4>Average rating: {{ avg_rating }}</h4>
+        {% endif %}
+
+        <br><h3>Reviews: </h3><br>
+
+        {% if review_results != [] %}
+            <div class="col-12">
+                <table class="col-12">
+                    <th><h5>User</h5></th>
+                    <th><h5>Rating</h5></th>
+                    <th><h5>Review</h5></th>
+
+                {% for result in review_results %}
+                
+                    <tr>
+                        <td>{{ result.username }}</td>
+                        <td>{{ result.rating }}</td>
+                        <td>{{ result.review }}</td>
+                    </tr>
+                
+                {% endfor %}
+                </table>
+            </div>
+        {% else %}
+            <h5>No reviews.</h5>
+        {% endif %}
+
+        <br><br><h4>Submit a review: </h4>
+
+        {% if user_review == None %}
+            <form id="review" method="post">
+                <label for="rating">Choose a rating for this book:</label>
+                <select name="rating">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+
+                <div class="form-group">
+                    <input class="form-control" name="review" placeholder="Review">
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        
+        {% else %}
+
+            <h5>You've already submitted a review for this book.</h5>
+        
+        {% endif %}
+        
+    </div>
+</div>
+
+{% endblock %}

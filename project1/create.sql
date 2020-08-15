@@ -1,0 +1,19 @@
+CREATE TABLE users (
+    username VARCHAR NOT NULL PRIMARY KEY,
+    password VARCHAR NOT NULL
+)
+
+CREATE TABLE books (
+    isbn VARCHAR NOT NULL PRIMARY KEY,
+    title VARCHAR NOT NULL,
+    author VARCHAR NOT NULL,
+    year INTEGER NOT NULL
+)
+
+CREATE TABLE reviews (
+    review_id VARCHAR NOT NULL PRIMARY KEY,
+    review VARCHAR NOT NULL,
+    rating INTEGER NOT NULL,
+    username VARCHAR REFERENCES users,
+    isbn VARCHAR REFERENCES books
+)
