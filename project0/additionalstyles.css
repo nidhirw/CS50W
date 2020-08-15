@@ -1,0 +1,22 @@
+.header, #caption {
+  text-align: center;
+  color: white;
+  font-size: 30px;
+}
+
+table th {
+  color: blue;
+}
+
+#caption {
+  background: gray;
+  text-transform: uppercase;
+  font-size: 20px;
+}
+
+.header {
+  padding: 60px;
+  background: #1abc9c;
+}
+
+/*# sourceMappingURL=additionalstyles.css.map */
