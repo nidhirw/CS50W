@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+
+        <script>
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+                // Setting or showing display name
+
+                // By default, submit button is disabled
+                document.querySelector('#display-name-submit').disabled = true;
+
+                if (localStorage.getItem('displayname')) {
+
+                    document.querySelector('#final-display-name').innerHTML = "Welcome, " + localStorage.getItem('displayname');
+                    document.querySelector('#channels-link').innerHTML = "Enter a channel".link("/channels");
+                    document.querySelector('#display-name').setAttribute('placeholder', 'Change Display Name');}
+
+                // Enable button only if there is text in the input field
+                document.querySelector('#display-name').onkeyup = () => {
+                    if (document.querySelector('#display-name').value.length > 0)
+                        document.querySelector('#display-name-submit').disabled = false;
+                    else
+                        document.querySelector('#display-name-submit').disabled = true;
+                };
+
+                document.querySelector('#display-name-form').onsubmit = () => {
+                    localStorage.setItem('displayname', document.querySelector('#display-name').value);
+                    document.querySelector('#final-display-name').innerHTML = "Welcome, " + localStorage.getItem('displayname');
+                    document.querySelector('#channels-link').innerHTML = "Enter a channel".link("/channels");
+                };
+            });
+        </script>
+    </head>
+
+    <body>
+        <div class="container">
+            <br><h1>Home</h1>
+
+            <br><h3 id="final-display-name">Please submit a display name</h3>
+
+            <br><form id="display-name-form">
+                <input id="display-name" autocomplete="off" autofocus placeholder="Display Name" type="text">
+                <input id="display-name-submit" type="submit">
+            </form>
+
+            <br><h4 id="channels-link"></h4>
+        </div>
+    </body>
+</html>

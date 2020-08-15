@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Channel</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+        
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="collapse navbar-collapse d-flex flex-lg-row-reverse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <a class="nav-item nav-link" href="/">Change display name</a>
+              </div>
+            </div>
+        </nav>
+
+        <script>
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+                // Setting or showing display name
+
+                // By default, submit button is disabled
+                document.querySelector('#channel-submit').disabled = true;
+
+                // Enable button only if there is text in the input field
+                document.querySelector('#channel_name').onkeyup = () => {
+                    if (document.querySelector('#channel_name').value.length > 0)
+                        document.querySelector('#channel-submit').disabled = false;
+                    else
+                        document.querySelector('#channel-submit').disabled = true;
+                };
+            });
+        </script>
+    </head>
+    <body>
+        <br><div class="container">
+            <h3> {{ message }} </h3>
+            <br><form id="channel_creation_form" action="{{ url_for('channels') }}" method="post">
+                <div class="form-group">
+                    <input class="form-control" id="channel_name" name="channel_name" placeholder="Enter New Channel Name">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" id="channel-submit">Submit</button>
+                </div>
+            </form>
+
+            <div>
+                {% if channel_list|length %}
+                    <br><h3>Existing channels: </h3>
+                    {% for channel in channel_list %}
+                        <br><h5><a href="/channels/{{channel}}">{{ channel }}</a></h5>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+        </div>
+    </body>
+</html>

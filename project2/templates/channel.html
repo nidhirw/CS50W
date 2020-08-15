@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Channel</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="collapse navbar-collapse d-flex flex-lg-row-reverse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <a class="nav-item nav-link" href="/">Change display name</a>
+                <a class="nav-item nav-link" href="/channels">Back to all channels</a>
+              </div>
+            </div>
+        </nav>
+
+        <style>
+            @keyframes hide {
+                0% {
+                    opacity: 1;
+                    height: 100%;
+                    padding: 20px;
+                    margin-bottom: 10px;
+                }
+                75% {
+                    opacity: 0;
+                    height: 100%;
+                    padding: 20px;
+                    margin-bottom: 10px;
+                }
+                100% {
+                    opacity: 0;
+                    height: 0px;
+                    padding: 0px;
+                    margin-bottom: 0px;
+                }
+            }
+
+            .post {
+                background-color: lightblue;
+                padding: 20px;
+                margin-bottom: 10px;
+                animation-name: hide;
+                animation-duration: 2s;
+                animation-fill-mode: forwards;
+                animation-play-state: paused;
+            }
+
+            .message {
+                display: inline;
+                font-size: 20px;
+            }
+
+            .time, .displayname {
+                display: inline;
+            }
+
+        </style>
+       
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+
+        <script id="post" type="text/x-handlebars-template">
+            <div class="post" id="postid">
+                <div class="row">
+                {% raw -%}
+                    <div class="col-sm-2">
+                        <i class="material-icons" style="font-size:24px">account_circle</i>
+                        <p class="displayname">{{ displayname }}</p>
+                        <p class="time">{{ time }}</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="message">{{ new_message }}</p>
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="hide">Delete</button>
+                    </div>              
+                {%- endraw %}
+                </div>
+            </div>
+        </script>
+
+        <script>
+
+            // Add a new post with given contents to DOM.
+            var postnum = 0;
+            var postarray = [];
+
+            const post_template = Handlebars.compile(document.querySelector('#post').innerHTML);
+            function add_post(content) {
+
+                // Create new post.
+                const post = post_template({'new_message': content[0], 'time': content[1], 'displayname': content[2]});
+                
+                // Add post to DOM.
+                document.querySelector('#posts').innerHTML += post;
+
+                document.getElementById("postid").id = postnum;
+                postarray.push(postnum);
+
+                if (postarray.length == 11) {
+                    document.getElementsByClassName("post")[0].remove();
+                    postarray.shift(); }
+                    
+                postnum += 1;
+            }
+
+            // Load next set of posts.
+            function load() {
+
+                // Open new request to get new posts.
+                const request = new XMLHttpRequest();
+                request.open('POST', '/posts');
+                request.onload = () => {
+                    const data = JSON.parse(request.responseText);
+                    data.forEach(add_post);};
+
+                // Add start and end points to request data.
+                const data = new FormData();
+                data.append('channel', document.querySelector('#channel_name').innerHTML);
+
+                // Send request.
+                request.send(data);
+            };
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+                // Load all messages
+                load();
+
+                // Connect to websocket
+                var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
+                // When connected, configure buttons
+                socket.on('connect', () => {
+
+                    // If hide button is clicked, delete the post.
+                    document.addEventListener('click', event => {
+                        const element = event.target;
+                        if (element.className === 'hide') {
+                            element.parentElement.parentElement.parentElement.style.animationPlayState = 'running';
+                            element.parentElement.parentElement.parentElement.addEventListener('animationend', () =>  {
+                                var deleted_id = element.parentElement.parentElement.parentElement.id;
+                                for (postid = 0; postid < postarray.length; postid++) {
+                                    if (postarray[postid] == deleted_id) {
+                                        const channel_name = document.querySelector('#channel_name').innerHTML;
+                                        socket.emit('delete message', {'channel': channel_name,'postid': postid});}}});}});
+
+                    // Each button should emit a "submit message" event
+                    document.querySelector('#new_message_form').onsubmit = function() {
+                            const new_message = document.querySelector('#new_message').value;
+                            const channel_name = document.querySelector('#channel_name').innerHTML;
+                            var time = new Date().toLocaleString().replace(',','');
+                            const displayname = localStorage.getItem('displayname');
+                            document.querySelector('#new_message').value = '';
+                            socket.emit('submit message', {'channel': channel_name,'new_message': new_message, 'time': time, 'displayname': displayname});
+                            return false;};});
+
+                socket.on('removed message', postid => {
+                    document.getElementById(postarray[postid]).remove();
+                    postarray.splice(postid, 1);}); 
+
+                // When a new message is announced, add to the unordered list
+                socket.on('channel messages', data => {
+                    add_post(data);});
+            
+            });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <br><h3 id="channel_name">{{ channel_name }}</h3>
+            <br><div id="posts">
+            </div>
+
+            <br><form id="new_message_form">
+                    <input id="new_message" autocomplete="off" autofocus placeholder="Enter New Message" type="text">
+                    <input type="submit">
+            </form>
+        </div>
+    </body>
+</html>
